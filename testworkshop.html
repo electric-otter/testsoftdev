@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code Editor</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/codemirror.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/clike/clike.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/markdown/markdown.min.js"></script>
@@ -14,8 +15,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/addon/lint/javascript-lint.min.js"></script>
 </head>
 <body>
+    <div id="file-manager">
+        <button id="new-project-btn">New Project</button>
+        <button id="test-project-btn">Test Project</button>
+        <ul id="file-list"></ul>
+    </div>
     <textarea id="code" name="code"></textarea>
     <script>
+        // Initialize CodeMirror editor
         var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
             lineNumbers: true,
             mode: "text/x-csrc", // Default mode
@@ -27,7 +34,7 @@
         // Function to change mode based on file type
         function changeMode(fileType) {
             var mode = "text/plain";
-            switch(fileType) {
+            switch (fileType) {
                 case "cpp":
                     mode = "text/x-c++src";
                     break;
@@ -48,7 +55,38 @@
             editor.setOption("mode", mode);
         }
 
-        // Example usage: changeMode('cpp'); to change to C++ mode
+        // File manager functionality
+        function addFile(fileName) {
+            var li = document.createElement('li');
+            li.textContent = fileName;
+            document.getElementById('file-list').appendChild(li);
+        }
+
+        document.getElementById('new-project-btn').addEventListener('click', function () {
+            var projectName = prompt('Enter project name:');
+            if (projectName) {
+                addFile(projectName);
+            }
+        });
+
+        document.getElementById('test-project-btn').addEventListener('click', function () {
+            var projectName = prompt('Enter project name to test:');
+            if (projectName) {
+                runTestProject(projectName);
+            }
+        });
+
+        function runTestProject(projectName) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/runTestProject", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    alert('Test project command executed successfully');
+                }
+            };
+            xhr.send(JSON.stringify({ projectName: projectName }));
+        }
     </script>
 </body>
 </html>
