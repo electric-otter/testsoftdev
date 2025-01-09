@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Editor</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/markdown/markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/addon/lint/lint.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/addon/lint/lint.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/addon/lint/javascript-lint.min.js"></script>
+</head>
+<body>
+    <textarea id="code" name="code"></textarea>
+    <script>
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+            lineNumbers: true,
+            mode: "text/x-csrc", // Default mode
+            theme: "default",
+            gutters: ["CodeMirror-lint-markers"],
+            lint: true
+        });
+
+        // Function to change mode based on file type
+        function changeMode(fileType) {
+            var mode = "text/plain";
+            switch(fileType) {
+                case "cpp":
+                    mode = "text/x-c++src";
+                    break;
+                case "c":
+                    mode = "text/x-csrc";
+                    break;
+                case "md":
+                    mode = "text/x-markdown";
+                    break;
+                case "asm":
+                    mode = "assembly/asm";
+                    break;
+                case "txt":
+                default:
+                    mode = "text/plain";
+                    break;
+            }
+            editor.setOption("mode", mode);
+        }
+
+        // Example usage: changeMode('cpp'); to change to C++ mode
+    </script>
+</body>
+</html>
